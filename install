@@ -62,7 +62,7 @@ cp -u plugin/* $HOME/.vim/plugin/
 if [ ! -f $HOME/.vimrc ]; then
     echo -e "${green}No \$HOME/.vimrc found » created${nc}"
     # echo $'"- vim Extension OpenFOAM\n:set tabstop=4 shiftwidth=4 expandtab'
-    echo $'"- vim Extension OpenFOAM, if you have no colorscheme set to 1:"\n:let g:foam_use_custom_colors=0'
+    echo $'"- vim Extension OpenFOAM, if you have no colorscheme set to 1:\n:let g:foam_use_custom_colors=0'
          \ >> $HOME/.vimrc
 
 else
