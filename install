@@ -50,8 +50,9 @@ fi
 # Copy files only if the copied files are newer [-u] 
 #-------------------------------------------------------------------------------
 cp -ur syntax/* $HOME/.vim/syntax/
-cp -u scripts.vim $HOME/.vim/
+cp -u ftdetect/* $HOME/.vim/ftdetect/
 cp -u colors/* $HOME/.vim/colors/
+cp -u plugin/* $HOME/.vim/plugin/
 
 
 # Check if .vimrc exist, if not create one and 
@@ -61,7 +62,7 @@ cp -u colors/* $HOME/.vim/colors/
 if [ ! -f $HOME/.vimrc ]; then
     echo -e "${green}No \$HOME/.vimrc found » created${nc}"
     # echo $'"- vim Extension OpenFOAM\n:set tabstop=4 shiftwidth=4 expandtab'
-    echo $'"- vim Extension OpenFOAM, if you have no colorscheme set to 1\n:let g:foam_use_custom_colors=0'
+    echo $'"- vim Extension OpenFOAM, if you have no colorscheme set to 1:"\n:let g:foam_use_custom_colors=0'
          \ >> $HOME/.vimrc
 
 else
