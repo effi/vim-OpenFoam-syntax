@@ -9,7 +9,6 @@
 
 #-------------------------------------------------------------------------------
 
-
 cd ${0%/*} || exit 1
 
 echo "
@@ -21,63 +20,81 @@ echo "
 \"-----------------------------------------\"
 "
 
+
 # Color definition for nice output and playing with bash
+# CHANGE \033 over \e as \033 is more portable
 #-------------------------------------------------------------------------------
-red='\e[0;31m'
-green='\e[0;32m'
-nc='\e[0m'
+red='\033[0;31m'
+green='\033[0;32m'
+nc='\033[0m'
 
 
 # Checking if .vim directories are available and create if bool = false
+# CHANGE Added extra folder checks
 #-------------------------------------------------------------------------------
 
 if [ ! -d $HOME/.vim ]; then
     mkdir $HOME/.vim
 fi
-
+if [ ! -d $HOME/.vim/plugin ]; then
+    mkdir $HOME/.vim/plugin
+fi
 if [ ! -d $HOME/.vim/syntax ]; then
     mkdir $HOME/.vim/syntax
 fi
-
 if [ ! -d $HOME/.vim/colors ]; then
     mkdir $HOME/.vim/colors
+fi
+if [ ! -d $HOME/.vim/ftdetect ]; then
+    mkdir $HOME/.vim/ftdetect
 fi
 if [ ! -d $HOME/.vim/syntax/foam256 ]; then
     mkdir $HOME/.vim/syntax/foam256
 fi
 
 
-# Copy files only if the copied files are newer [-u] 
+# Copy files 
+# CHANGE Removed the -u option as it causes issues on older bash shells
+# -v option added for verbose output
 #-------------------------------------------------------------------------------
-cp -ur syntax/* $HOME/.vim/syntax/
-cp -u scripts.vim $HOME/.vim/
-cp -u colors/* $HOME/.vim/colors/
+cp -vr syntax/* $HOME/.vim/syntax/
+cp -v ftdetect/* $HOME/.vim/ftdetect/
+cp -v colors/* $HOME/.vim/colors/
+cp -v plugin/* $HOME/.vim/plugin/
 
 
 # Check if .vimrc exist, if not create one and 
 # insert stuff, otherwise just add the stuff to the end of the file
 # TODO - check if the input lines still available!
+# CHANGE updated this section to work a little cleaner.
 #-------------------------------------------------------------------------------
-if [ ! -f $HOME/.vimrc ]; then
-    echo -e "${green}No \$HOME/.vimrc found » created${nc}"
-    # echo $'"- vim Extension OpenFOAM\n:set tabstop=4 shiftwidth=4 expandtab'
-    echo $'"- vim Extension OpenFOAM, if you have no colorscheme set to 1\n:let g:foam_use_custom_colors=0'
-         \ >> $HOME/.vimrc
+vimrcEdit=false
 
+if [ ! -f "$HOME/.vimrc" ]; then
+    echo -e "${red}No \$HOME/.vimrc found » created${nc}"
+    touch "$HOME/.vimrc"
+    vimrcEdit=true
 else
     echo -e "${red}There is an existing \$HOME/.vimrc file"
 
-    if grep -Fq "vim Extension OpenFOAM" $HOME/.vimrc; then
+    if grep -Fq "vim Extension OpenFOAM" "$HOME/.vimrc"; then
         echo "Entry of vim Extenion OpenFOAM in $HOME/.vimrc 
               found » nothing to do"
-
-    else 
-        echo -e "${green}The following lines are insert to the last line:
-                 ':set tabstop=4 shiftwidth=4 expandtab'${nc}"
-        # echo $'"- vim Extension OpenFOAM\n:set tabstop=4 shiftwidth=4 expandtab'
-        echo $'"- vim Extension OpenFOAM, if you have no colorscheme set to 1\n:let g:foam_use_custom_colors=0'
-             \ >> $HOME/.vimrc
+    else
+        echo -e "${green}adding extension configuration to .vimrc${nc}"
+        vimrcEdit=true
     fi
+fi
+
+if [ "$vimrcEdit" = true ]; then 
+    {
+        echo $'"------ vim Extension OpenFOAM ------'
+        echo $':syntax on'
+        echo $':set tabstop=4 shiftwidth=4 expandtab'
+        echo $'"If you have no colorscheme set to 1'
+        echo $':let g:foam_use_custom_colors=0'
+        echo $'"------ vim Extension OpenFOAM ------'
+    } >> "$HOME/.vimrc"
 fi
 
 
@@ -87,6 +104,5 @@ echo -e "${nc}
 vimExtensionOpenFOAM is ready to use...
 Have a nice day... 
 Tobias Holzmann"
-
 
 #-------------------------------------------------------------------------------
